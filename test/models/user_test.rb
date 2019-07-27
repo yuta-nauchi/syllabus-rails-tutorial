@@ -2,8 +2,33 @@ require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
   def setup
-     @user = User.new(name: "Example User", email: "user@example.com", password: "foobar", password_confirmation: "foobar" )
+     @user = User.new(name: "example user", email: "user@example.com", password: "foobar", password_confirmation: "foobar" )
   end
+
+  test "name validation should accept lower-case letters" do
+    lower_case_names = %w[foobar hogehoge]
+    lower_case_names.each do |lower_case_name|
+      @user.name = lower_case_name
+      assert @user.valid?
+    end
+  end
+
+  test "name validation should reject non-lower-case litters" do
+    non_lower_case_names = %w[Foobar Hogehoge]
+    non_lower_case_names.each do |non_lower_case_name|
+      @user.name = non_lower_case_name
+      assert_not @user.valid?
+    end
+  end
+
+   
+  test "name should have a minimum length" do
+    @user.name = "a"*3
+    assert_not @user.valid?
+  end
+
+
+
 
   test "should be valid" do
     assert @user.valid?
